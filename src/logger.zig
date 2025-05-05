@@ -47,7 +47,7 @@ pub const Logger = struct {
         const label = level_label(level);
         const reset = "\x1b[0m";
 
-        out.print("{s}[{s}]{s}   {s}: ", .{ color, label, reset, self.scope }) catch return;
+        out.print("{s}[{s}]{s} {s}: ", .{ color, label, reset, self.scope }) catch return;
         out.print(fmt ++ "\n", args) catch return;
     }
 
