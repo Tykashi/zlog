@@ -35,8 +35,8 @@ pub const Logger = struct {
 
     fn level_label(level: LogLevel) []const u8 {
         return switch (level) {
-            .info => "INFO ",
-            .warn => "WARN ",
+            .info => "INFO",
+            .warn => "WARN",
             .@"error" => "ERROR",
         };
     }
