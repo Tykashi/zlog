@@ -21,13 +21,17 @@ pub const Logger = struct {
         };
     }
 
-    pub fn child(self: *Logger, scope: []const u8) Logger {
-        const new_scope = std.fmt.allocPrint(self.arena.allocator(), "{s}.{s}", .{ self.scope, scope }) catch "Logger.child.alloc.fail";
-        return Logger{
+    pub fn child(self: *Logger, scope: []const u8) !*Logger {
+        const allocator = self.arena.allocator();
+        const child_logger = try allocator.create(Logger);
+        const new_scope = try std.fmt.allocPrint(allocator, "{s}.{s}", .{ self.scope, scope });
+
+        child_logger.* = Logger{
             .arena = self.arena,
             .scope = new_scope,
             .show_timestamp = self.show_timestamp,
         };
+        return child_logger;
     }
 
     fn level_color(level: LogLevel) []const u8 {
