@@ -46,9 +46,6 @@ pub const Logger = struct {
     }
 
     pub fn log(self: Logger, level: LogLevel, comptime fmt: []const u8, args: anytype) void {
-        log_mutex.lock();
-        defer log_mutex.unlock();
-
         const out = std.io.getStdOut().writer();
         const color = level_color(level);
         const label = level_label(level);
