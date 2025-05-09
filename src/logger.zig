@@ -6,8 +6,6 @@ pub const LogLevel = enum {
     @"error",
 };
 
-var log_mutex = std.Thread.Mutex{};
-
 pub const Logger = struct {
     arena: std.heap.ArenaAllocator,
     scope: []const u8,
@@ -21,17 +19,14 @@ pub const Logger = struct {
         };
     }
 
-    pub fn child(self: *Logger, scope: []const u8) !*Logger {
-        const allocator = self.arena.allocator();
-        const child_logger = try allocator.create(Logger);
-        const new_scope = try std.fmt.allocPrint(allocator, "{s}.{s}", .{ self.scope, scope });
+    pub fn child(self: *Logger, scope: []const u8) Logger {
+        const new_scope = try std.fmt.allocPrint(self.arena, "{s}.{s}", .{ self.scope, scope });
 
-        child_logger.* = Logger{
+        return Logger{
             .arena = self.arena,
             .scope = new_scope,
             .show_timestamp = self.show_timestamp,
         };
-        return child_logger;
     }
 
     fn level_color(level: LogLevel) []const u8 {
